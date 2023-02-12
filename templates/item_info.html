@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ item.name }} info page</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <h1>Item name</h1>
+  <p>{{ item.name }}<p>
+  <br>
+  <h1>Item description</h1>
+  <p>{{ item.description }}</p>
+  <br>
+  <h1>Item price</h1>
+  <p>{{ item.price }} $</p>
+  <br>
+  <button id="clickMe">Buy</button>
+  <input type="hidden" id="url" data-url="{% url 'buy' item.id %}">
+  <script src="{% static 'buy.js' %}"></script>
+</body>
+
+</html>
