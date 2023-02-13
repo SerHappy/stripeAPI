@@ -13,8 +13,6 @@ def home(request):
 
 
 def item_info(request, item_id):
-    # if request.method == "GET":
-    #     return redirect("home")
     item = Item.objects.get(id=item_id)
     ctx = {"item": item}
     return render(request, "item_info.html", ctx)
