@@ -12,42 +12,49 @@ This project use Django 4.1.
 git clone git@github.com:SerHappy/stripeAPI.git
 cd stripeAPI
 ```
+2. Rename .env-example to .env and fill it with your data.
 
-2. Activate the virtualenv for your project.
+*Django test secret key: django-insecure-ar=$!pe)cy9c^*-t-#$ei$iv&@)bf+4t)!ci2^y_nairmgm9^5*
+```bash
+DJANGO_SECRET_KEY=
+DEBUG=
+```
+
+3. Activate the virtualenv for your project.
 
 _Installing inside virtualenv is recommended, however you can start your project without virtualenv too._
 
-2.1 Create virtualenv:
+3.1 Create virtualenv:
 
 ```bash
 python -m venv env
 ```
 
-2.2 Activate virtualenv (Windows):
+3.2 Activate virtualenv (Windows):
 
 ```bash
 .\venv\Scripts\activate
 ```
 
-2.3 Activate virtualenv (Unix):
+3.3 Activate virtualenv (Unix):
 
 ```bash
 source env/bin/activate
 ```
 
-3. Install project dependencies
+4. Install project dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Then simply apply the migrations:
+5. Then simply apply the migrations:
 
 ```bash
 python manage.py migrate
 ```
 
-5. Now you can run the development server:
+6. Now you can run the development server:
 
 ```bash
 python manage.py runserver
