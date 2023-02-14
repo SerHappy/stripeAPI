@@ -1,6 +1,6 @@
 # StripeAPI
 
-The goal of this project is to learn how to use Stripe API and Django together.
+The goal of this project is to learn how to use [Stripe API](https://stripe.com/docs) and [Django](https://docs.djangoproject.com/en/4.1/) together.
 
 This project use Django 4.1.
 
@@ -33,7 +33,7 @@ python -m venv env
 3.2 Activate virtualenv (Windows):
 
 ```bash
-.\venv\Scripts\activate
+.\env\Scripts\activate
 ```
 
 3.3 Activate virtualenv (Unix):
@@ -60,6 +60,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 # Docker
+*0. Download and install [Docker](https://docs.docker.com/get-docker/)*
 
 1. Build docker image
 
@@ -73,17 +74,33 @@ docker build -t app .
 docker run --rm -d --publish 8000:8000 <image_id>
 ```
 
-3. Open http://localhost:8000/ (or 0.0.0.0:8000) in your browser.
+3. Open [localhost](http://localhost:8000/) (or 0.0.0.0:8000) in your browser.
 
 # Docker with docker-compose
+*0. Download and install [Docker-compose](https://docs.docker.com/compose/install/)*
 
 1. Build docker image, create and start container
 
 ```bash
 docker-compose up --build
 ```
-2. Open http://localhost:8000/ (or 0.0.0.0:8000) in your browser
+2. Open [localhost](http://localhost:8000/) (or 0.0.0.0:8000) in your browser.
 
+# Django tests
+
+1. Run tests
+
+```bash
+python manage.py test
+```
+
+**Possible result**
+```bash
+Ran 6 tests in 7.030s
+
+OK
+Destroying test database for alias 'default'...
+```
 # API Examples
 
 #### Get HTML with Stripe payment button for Item with id=1
