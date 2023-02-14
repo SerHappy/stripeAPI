@@ -10,6 +10,7 @@
 
 <body>
   <h1>Stripe</h1>
+  {% if items %}
   {% for item in items %}
   <h4>{{ item.name }}</h4>
   <h4>{{ item.price }}</h4>
@@ -18,6 +19,9 @@
   <br>
   <br>
   {% endfor %}
+  {% else %}
+  <h4>No items found</h4>
+  {% endif %}
 </body>
 
 </html>
