@@ -11,7 +11,6 @@ button.addEventListener("click", function () {
     
     fetch(request)
         .then(function (response) {
-            console.log(response)
             return response.json();
         })
         .then(function (session) {

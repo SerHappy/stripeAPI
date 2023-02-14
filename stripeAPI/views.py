@@ -1,25 +1,27 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 import stripe
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 
 from stripeAPI.models import Item
-from .serializers import ItemSerializer
 
 
 def home(request):
     items = Item.objects.all()
+    if items is None:
+        return HttpResponse("No items found")
     ctx = {"items": items}
     return render(request, "home.html", ctx)
 
 
 def item_info(request, item_id):
-    item = Item.objects.get(id=item_id)
+    item = get_object_or_404(Item, id=item_id)
     ctx = {"item": item}
     return render(request, "item_info.html", ctx)
 
 
 def buy(request, item_id):
-    item = Item.objects.get(id=item_id)
+    item = get_object_or_404(Item, id=item_id)
 
     stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
@@ -41,6 +43,5 @@ def buy(request, item_id):
         ],
         mode="payment",
     )
-    print(data)
 
     return JsonResponse({"session_id": data["id"]})
