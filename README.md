@@ -52,8 +52,30 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+# Docker
 
-## API Examples
+1. Build docker image
+
+```bash
+docker build -t app .
+```
+
+2. Create and start container
+
+```bash
+docker run --rm -d --publish 8000:8000 <image_id>
+```
+
+# Docker with docker-compose
+
+1. Build docker image, create and start container
+
+```bash
+docker-compose up --build
+```
+
+
+# API Examples
 
 #### Get HTML with Stripe payment button for Item with id=1
 
@@ -61,9 +83,9 @@ python manage.py runserver
   curl -X GET http://localhost:8000/item/1/
 ```
 
-| Parameter | Type  | Description           |
+| Parameter | Type  |     Description       |
 | :-------- | :---- | :-------------------- |
-| `id`      | `int` | **Required**. item id |
+|   `id`    | `int` | **Required**. item id |
 
 #### The result:
 
