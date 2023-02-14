@@ -27,7 +27,7 @@ SECRET_KEY = config("DJANGO_SECRET_KEY", cast=str)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
