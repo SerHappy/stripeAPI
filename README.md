@@ -66,6 +66,8 @@ docker build -t app .
 docker run --rm -d --publish 8000:8000 <image_id>
 ```
 
+3. Open http://localhost:8000/ (or 0.0.0.0:8000) in your browser.
+
 # Docker with docker-compose
 
 1. Build docker image, create and start container
@@ -73,7 +75,7 @@ docker run --rm -d --publish 8000:8000 <image_id>
 ```bash
 docker-compose up --build
 ```
-
+2. Open http://localhost:8000/ (or 0.0.0.0:8000) in your browser
 
 # API Examples
 
