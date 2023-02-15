@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, JsonResponse
+from rest_framework.views import APIView
 
 from stripeAPI.models import Item
 
@@ -40,38 +41,44 @@ def item_info(request: WSGIRequest, item_id: int) -> HttpResponse:
     return render(request, "item_info.html", ctx)
 
 
-def buy(request: WSGIRequest, item_id: int) -> JsonResponse:
-    """This is the view that will be called when the user clicks the buy button.
+class BuyAPIView(APIView):
+    """This is the view that will be called when the user clicks on the buy button.
 
     Args:
-        request (WSGIRequest): request object
-        item_id (int): id of the item that the user wants to buy
-
-    Returns:
-        JsonResponse: a json response with the session id
+        APIView (APIView): Base class for all API views.
+ 
     """
+    def get(self, request: WSGIRequest, item_id: int) -> JsonResponse:
+        """This method is called when GET request is sent to the server.
 
-    item = get_object_or_404(Item, id=item_id)
+        Args:
+            request (WSGIRequest): request object
+            item_id (int): id of the item that the user wants to buy
 
-    stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
+        Returns:
+            JsonResponse: a json response with the session id
+        """
+        item = get_object_or_404(Item, id=item_id)
 
-    product = stripe.Product.create(name=item.name)
+        stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
-    price = stripe.Price.create(
-        unit_amount=int(item.price) * 100,
-        currency="usd",
-        product=product,
-    )
+        product = stripe.Product.create(name=item.name)
 
-    data = stripe.checkout.Session.create(
-        success_url="http://localhost:8000/",
-        line_items=[
-            {
-                "price": price,
-                "quantity": 1,
-            },
-        ],
-        mode="payment",
-    )
+        price = stripe.Price.create(
+            unit_amount=int(item.price) * 100,
+            currency="usd",
+            product=product,
+        )
 
-    return JsonResponse({"session_id": data["id"]})
+        data = stripe.checkout.Session.create(
+            success_url="http://localhost:8000/",
+            line_items=[
+                {
+                    "price": price,
+                    "quantity": 1,
+                },
+            ],
+            mode="payment",
+        )
+
+        return JsonResponse({"session_id": data["id"]})

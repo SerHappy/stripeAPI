@@ -26,7 +26,7 @@ favicon_view = RedirectView.as_view(url="/static/favicon.ico", permanent=True)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.home, name="home"),
-    path("buy/<int:item_id>/", views.buy, name="buy"),
+    path("buy/<int:item_id>/", views.BuyAPIView.as_view(), name="buy"),
     path("item/<int:item_id>/", views.item_info, name="item"),
     re_path(r"^favicon\.ico$", favicon_view),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
