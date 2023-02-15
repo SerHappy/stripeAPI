@@ -18,12 +18,22 @@
   <h1>Item description</h1>
   <p>{{ item.description }}</p>
   <br>
-  <h1>Item price</h1>
-  <p>{{ item.price }} $</p>
-  <br>
+  <h1>Item prices</h1>
+  {% for item_price in item_prices %}
+  <p>{{ item_price.price }} {{ item_price.currency }}</p>
+  {% endfor %}
+  <select id="SelectCurrency">
+    {% for item_price in item_prices %}
+    <option value={{ item_price.currency }}>{{ item_price.currency }}</option>
+    {% endfor %}
+  </select>
   <button id="clickMe">Buy</button>
   <input type="hidden" id="url" data-url="{% url 'buy' item.id %}">
   <script defer src="{% static 'buy.js' %}"></script>
+  <form action="{%url 'add' item.id %}" method="POST">
+    {% csrf_token %}
+    <button type='submit' id="order"> <span class="text">Add to
+        cart</span></button>
 </body>
 
 </html>

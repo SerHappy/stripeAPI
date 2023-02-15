@@ -1,5 +1,6 @@
 var button = document.getElementById("clickMe");
 
+
 button.addEventListener("click", function () {
   /**
    * When the customer clicks on the button, redirect
@@ -8,8 +9,18 @@ button.addEventListener("click", function () {
 
   var stripe = Stripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
 
+  var e = document.getElementById("SelectCurrency");
+  
   var my_string = $("#url").attr("data-url");
-  var url = document.location.origin + my_string;
+
+  if (e != null) {
+    var url = document.location.origin + my_string + "?currency=" + e.value;
+  } else {
+    var url = document.location.origin + my_string;
+  }
+
+  console.log(url);
+
 
   const request = new Request(url);
 

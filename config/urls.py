@@ -28,5 +28,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("buy/<int:item_id>/", views.BuyAPIView.as_view(), name="buy"),
     path("item/<int:item_id>/", views.item_info, name="item"),
+    path("add/<int:item_id>/", views.add_to_cart, name="add"),
+    path("order/<int:order_id>/", views.OrderBuyAPIView.as_view(), name="order"),
     re_path(r"^favicon\.ico$", favicon_view),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
