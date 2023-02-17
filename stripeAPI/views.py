@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework.views import APIView
 
 from stripeAPI.models import Currency, Item, ItemCurrency, Order
@@ -92,7 +92,10 @@ def add_to_cart(request: WSGIRequest, item_id: int) -> HttpResponse:
         item = Item.objects.get(id=item_id, order=order)
         item.quantity += 1
     except Item.DoesNotExist:
-        item = Item.objects.get(id=item_id)
+        try:
+            item = Item.objects.get(id=item_id)
+        except Item.DoesNotExist:
+            raise Http404
         item.order = order
         item.quantity = 1
     item.save()
@@ -124,20 +127,46 @@ class BuyAPIView(APIView):
 
         product = stripe.Product.create(name=item.name)
 
-        item_currency_usd = Currency.objects.get(currency="USD")
-        item_currency_eur = Currency.objects.get(currency="EUR")
+        currency_usd = Currency.objects.get(currency="USD")
+        currency_eur = Currency.objects.get(currency="EUR")
+
+        item_usd_price = (
+            int(
+                ItemCurrency.objects.get(
+                    item=item_id, currency=currency_usd
+                ).price
+            )
+            * 100
+        )
+        item_eur_price = (
+            int(
+                ItemCurrency.objects.get(
+                    item=item_id, currency=currency_eur
+                ).price
+            )
+            * 100
+        )
 
         price = stripe.Price.create(
             expand=["currency_options"],
-            unit_amount=int(ItemCurrency.objects.get(item=item_id, currency=item_currency_usd).price) * 100,
+            unit_amount=item_usd_price,
             currency="usd",
             currency_options={
                 "eur": {
-                    "unit_amount": int(ItemCurrency.objects.get(item=item_id, currency=item_currency_eur).price) * 100,
+                    "unit_amount": item_eur_price,
                 },
             },
             product=product,
         )
+        if request.GET.get("currency") is None:
+            session_currency = "usd"
+        else:
+            if Currency.objects.filter(
+                currency=request.GET["currency"]
+            ).exists():
+                session_currency = request.GET["currency"]
+            else:
+                session_currency = "usd"
 
         session = stripe.checkout.Session.create(
             success_url="http://localhost:8000/",
@@ -149,7 +178,7 @@ class BuyAPIView(APIView):
                 },
             ],
             mode="payment",
-            currency=request.GET["currency"],
+            currency=session_currency,
             payment_method_types=["card"],
         )
 
@@ -174,15 +203,30 @@ class OrderBuyAPIView(APIView):
         Returns:
             JsonResponse: a json response with the session id
         """
-        order = Order.objects.get(id=order_id, order_number=_order_id(request))
+        order = get_object_or_404(
+            Order, id=order_id, order_number=_order_id(request)
+        )
         items = Item.objects.filter(order=order)
+
+        print(items.count())
+
+        if items.count() == 0:
+            raise Http404
 
         stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
         line_items = []
 
         for item in items:
-            item_currency_usd = Currency.objects.get(currency="USD")
+            currency_usd = Currency.objects.get(currency="USD")
+            item_usd_price = (
+                int(
+                    ItemCurrency.objects.get(
+                        item=item.id, currency=currency_usd
+                    ).price
+                )
+                * 100
+            )
 
             line_items.append(
                 {
@@ -191,8 +235,7 @@ class OrderBuyAPIView(APIView):
                         "product_data": {
                             "name": item.name,
                         },
-                        "unit_amount": int(ItemCurrency.objects.get(item=item.id, currency=item_currency_usd).price)
-                        * 100,
+                        "unit_amount": item_usd_price,
                     },
                     "quantity": item.quantity,
                 }
