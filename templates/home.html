@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stripe</title>
+  <title>Home page</title>
 </head>
 
 <body>
@@ -15,16 +15,16 @@
   <h1>Items you can buy</h1>
   {% if items %}
   <ul>
-  {% for item in items %}
-  <li>
-  <h4>Name: {{ item.item__name }}</h4>
-  <h4>Description: {{ item.item__description }}</h4>
-  <h4>Price in USD: {{ item.price }} $</h4>
-  <a href="{% url 'item' item.item__id %}">Item Info</a>
-  </li>
-  <br>
-  <br>
-  {% endfor %}
+    {% for item in items %}
+    <li>
+      <h4>Name: {{ item.item__name }}</h4>
+      <h4>Description: {{ item.item__description }}</h4>
+      <h4>Price in USD: {{ item.price }} $</h4>
+      <a href="{% url 'item' item.item__id %}">Item Info</a>
+    </li>
+    <br>
+    <br>
+    {% endfor %}
   </ul>
   {% else %}
   <h4>No items found</h4>
@@ -33,23 +33,23 @@
   {% if order %}
   <h1>Your Order: </h1>
   <ul>
-  {% if order_items %}
-  {% for item in order_items %}
-  <li>
-  <h4>Name: {{ item.name }}</h4>
-  <h4>Description: {{ item.description }}</h4>
-  <h4>Price in USD: {{ item.price }} $</h4>
-  <h4>{{ item.quantity }}</h4>
-  <a href="{% url 'item' item.id %}">Item Info</a>
-  </li>
-  <br>
-  <br>
-  {% endfor %}
+    {% if order_items %}
+    {% for item in order_items %}
+    <li>
+      <h4>Name: {{ item.name }}</h4>
+      <h4>Description: {{ item.description }}</h4>
+      <h4>Price in USD: {{ item.price }} $</h4>
+      <h4>{{ item.quantity }}</h4>
+      <a href="{% url 'item' item.id %}">Item Info</a>
+    </li>
+    <br>
+    <br>
+    {% endfor %}
   </ul>
   {% else %}
   {% endif %}
   <button id="clickMe">Buy your order!</button>
-  
+
   <input type="hidden" id="url" data-url="{% url 'order' order.id %}">
   <script defer src="{% static 'buy.js' %}"></script>
   {% else %}

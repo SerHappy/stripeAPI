@@ -97,9 +97,6 @@ def add_to_cart(request: WSGIRequest, item_id: int) -> HttpResponse:
         item.quantity = 1
     item.save()
 
-    # item_prices = ItemCurrency.objects.filter(item=item_id)
-
-    # ctx = {"item": item, "item_prices": item_prices}
     return redirect("home")
 
 
@@ -127,17 +124,16 @@ class BuyAPIView(APIView):
 
         product = stripe.Product.create(name=item.name)
 
+        item_currency_usd = Currency.objects.get(currency="USD")
+        item_currency_eur = Currency.objects.get(currency="EUR")
+
         price = stripe.Price.create(
             expand=["currency_options"],
-            unit_amount=int(ItemCurrency.objects.get(item=item_id, currency=Currency.objects.get(currency="USD")).price)
-            * 100,
+            unit_amount=int(ItemCurrency.objects.get(item=item_id, currency=item_currency_usd).price) * 100,
             currency="usd",
             currency_options={
                 "eur": {
-                    "unit_amount": int(
-                        ItemCurrency.objects.get(item=item_id, currency=Currency.objects.get(currency="EUR")).price
-                    )
-                    * 100,
+                    "unit_amount": int(ItemCurrency.objects.get(item=item_id, currency=item_currency_eur).price) * 100,
                 },
             },
             product=product,
@@ -161,7 +157,23 @@ class BuyAPIView(APIView):
 
 
 class OrderBuyAPIView(APIView):
+    """This is the view that will be called when the user clicks on the OrderBuy button.
+
+    Args:
+        APIView (APIView): Base class for all API views.
+
+    """
+
     def get(self, request: WSGIRequest, order_id: int) -> JsonResponse:
+        """This method is called when GET request is sent to the server.
+
+        Args:
+            request (WSGIRequest): request object
+            order_id (int): id of the order that the user wants to buy
+
+        Returns:
+            JsonResponse: a json response with the session id
+        """
         order = Order.objects.get(id=order_id, order_number=_order_id(request))
         items = Item.objects.filter(order=order)
 
@@ -170,6 +182,8 @@ class OrderBuyAPIView(APIView):
         line_items = []
 
         for item in items:
+            item_currency_usd = Currency.objects.get(currency="USD")
+
             line_items.append(
                 {
                     "price_data": {
@@ -177,9 +191,7 @@ class OrderBuyAPIView(APIView):
                         "product_data": {
                             "name": item.name,
                         },
-                        "unit_amount": int(
-                            ItemCurrency.objects.get(item=item.id, currency=Currency.objects.get(currency="USD")).price
-                        )
+                        "unit_amount": int(ItemCurrency.objects.get(item=item.id, currency=item_currency_usd).price)
                         * 100,
                     },
                     "quantity": item.quantity,

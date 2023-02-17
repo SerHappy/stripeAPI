@@ -14,7 +14,8 @@ cd stripeAPI
 ```
 2. Rename .env-example to .env and fill it with your data.
 
-*Django test secret key: django-insecure-ar=$!pe)cy9c^*-t-#$ei$iv&@)bf+4t)!ci2^y_nairmgm9^5*
+*Django test secret key: django-insecure-ar=$!pe)cy9c^\*-t-#$ei$iv&@)bf+4t)!ci2^y_nairmgm9^5*
+
 ```bash
 DJANGO_SECRET_KEY=
 DEBUG=
