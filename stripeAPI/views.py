@@ -33,15 +33,17 @@ def home(request: WSGIRequest) -> HttpResponse:
     Returns:
         HttpResponse: a Http response with the home page
     """
-
-    items = (
-        ItemCurrency.objects.prefetch_related("item")
-        .filter(currency=Currency.objects.get(currency="USD"))
-        .values("item__id", "item__name", "item__description", "price")
-    )
+    try:
+        items = (
+            ItemCurrency.objects.prefetch_related("item")
+            .filter(currency=Currency.objects.get(currency="USD"))
+            .values("item__id", "item__name", "item__description", "price")
+        )
+    except (Currency.DoesNotExist):
+        raise Http404
 
     if items is None:
-        return HttpResponse("No items found")
+        return render(request, "home.html")
 
     ctx = {"items": items}
 
@@ -207,8 +209,6 @@ class OrderBuyAPIView(APIView):
             Order, id=order_id, order_number=_order_id(request)
         )
         items = Item.objects.filter(order=order)
-
-        print(items.count())
 
         if items.count() == 0:
             raise Http404

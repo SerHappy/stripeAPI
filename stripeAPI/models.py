@@ -20,18 +20,23 @@ class Currency(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=100)
-    order = models.ForeignKey("Order", on_delete=models.CASCADE, blank=True, null=True)
+    order = models.ForeignKey(
+        "Order", on_delete=models.SET_NULL, blank=True, null=True
+    )
     quantity = models.IntegerField(default=1)
     description = models.TextField()
-    price = models.FloatField()
 
     def __str__(self):
         return self.name
 
 
 class ItemCurrency(models.Model):
-    item = models.ForeignKey("Item", on_delete=models.CASCADE, blank=True, null=True)
-    currency = models.ForeignKey("Currency", on_delete=models.CASCADE, blank=True, null=True)
+    item = models.ForeignKey(
+        "Item", on_delete=models.CASCADE, blank=True, null=True
+    )
+    currency = models.ForeignKey(
+        "Currency", on_delete=models.CASCADE, blank=True, null=True
+    )
     price = models.FloatField()
 
     def __str__(self) -> str:
